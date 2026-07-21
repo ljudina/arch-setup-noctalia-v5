@@ -1,0 +1,6 @@
+thorium-browser-bin
+etcher-bin
+calcure
+postman-bin
+# Noctalia v5 (currently distributed as a rolling AUR package)
+noctalia-git

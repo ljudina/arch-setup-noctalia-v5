@@ -1,0 +1,107 @@
+# Noctalia v5 configuration.
+# Keep this file intentionally small so new v5 defaults can evolve upstream.
+
+[shell]
+telemetry_enabled = false
+setup_wizard_enabled = false
+polkit_agent = true
+clipboard_enabled = true
+
+[theme]
+mode = "dark"
+source = "builtin"
+builtin = "Catppuccin"
+
+[location]
+auto_locate = true
+address = "Belgrade"
+
+[weather]
+enabled = true
+refresh_minutes = 30
+unit = "metric"
+effects = true
+
+[wallpaper]
+enabled = true
+directory = "~/Pictures/wallpapers"
+fill_mode = "crop"
+fill_color = "surface"
+transition = ["fade", "wipe", "disc", "stripes", "zoom", "honeycomb"]
+transition_duration = 1500
+edge_smoothness = 0.3
+transition_on_startup = false
+
+[system.monitor]
+enabled = true
+cpu_poll_seconds = 2.0
+gpu_poll_seconds = 5.0
+memory_poll_seconds = 2.0
+network_poll_seconds = 3.0
+disk_poll_seconds = 10.0
+
+[lockscreen]
+enabled = true
+fingerprint = false
+
+[notification]
+enable_daemon = true
+position = "top_right"
+layer = "top"
+
+[bar]
+order = ["main"]
+
+[bar.main]
+enabled = true
+position = "top"
+auto_hide = false
+smart_auto_hide = false
+show_on_workspace_switch = true
+reserve_space = true
+layer = "top"
+start = ["launcher", "workspaces", "active_window"]
+center = ["clock", "weather"]
+end = [
+  "media",
+  "tray",
+  "notifications",
+  "clipboard",
+  "network",
+  "net-down",
+  "net-up",
+  "keyboard_layout",
+  "volume",
+  "brightness",
+  "battery",
+  "control-center",
+  "session",
+]
+
+[widget.clock]
+format = "{:%H:%M} {:%a, %b %d}"
+tooltip_format = "{:%A, %B %d, %Y}"
+
+[widget.weather]
+show_condition = false
+show_temperature = true
+
+[widget.keyboard_layout]
+hide_when_single_layout = false
+show_icon = true
+show_label = true
+display = "short"
+
+[widget.net-down]
+type = "sysmon"
+stat = "net_rx"
+display = "text"
+network_speed_unit = "auto"
+network_speed_compact = true
+
+[widget.net-up]
+type = "sysmon"
+stat = "net_tx"
+display = "text"
+network_speed_unit = "auto"
+network_speed_compact = true

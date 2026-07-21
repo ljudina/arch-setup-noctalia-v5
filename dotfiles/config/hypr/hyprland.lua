@@ -1,0 +1,401 @@
+-- Hyprland 0.55+ Lua configuration for CachyOS and Noctalia v5.
+-- https://wiki.hypr.land/Configuring/Start/
+
+----------------
+-- Monitors
+----------------
+
+hl.monitor({
+  output = "",
+  mode = "preferred",
+  position = "auto",
+  scale = "auto",
+})
+
+hl.monitor({
+  output = "eDP-1",
+  mode = "preferred",
+  position = "auto",
+  scale = 1,
+})
+
+hl.monitor({
+  output = "HDMI-A-1",
+  mode = "1920x1080@60",
+  position = "0x0",
+  scale = 1,
+})
+
+----------------
+-- Applications
+----------------
+
+local browser = "thorium-browser --enable-features=UseOzonePlatform --ozone-platform=wayland"
+local terminal = "footclient"
+local file_manager = "nautilus"
+local mail = "/opt/google/chrome/google-chrome --profile-directory=Default --app-id=faolnafnngnfdaknnbpnkhgohbobgegn %U"
+local chat = "mattermost-desktop"
+local password_manager = 'SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket" keepassxc'
+local noctalia = "noctalia msg "
+
+----------------
+-- Autostart
+----------------
+
+hl.on("hyprland.start", function()
+  hl.exec_cmd("~/.config/hypr/scripts/autostart.sh")
+  hl.exec_cmd("dbus-update-activation-environment --systemd --all")
+  hl.exec_cmd("systemctl --user start hyprland-session.target")
+  hl.exec_cmd("noctalia")
+
+  hl.exec_cmd(browser, { workspace = "1" })
+  hl.exec_cmd(mail, { workspace = "3" })
+  hl.exec_cmd(chat, { workspace = "4" })
+
+  hl.exec_cmd("~/.config/hypr/scripts/lid-monitor.sh startup")
+  hl.exec_cmd("~/.config/hypr/scripts/monitor-watcher.sh")
+end)
+
+----------------
+-- Environment
+----------------
+
+hl.env("XCURSOR_SIZE", "24")
+hl.env("HYPRCURSOR_SIZE", "24")
+hl.env("QT_QPA_PLATFORM", "wayland")
+hl.env("ELECTRON_OZONE_PLATFORM_HINT", "auto")
+
+----------------
+-- Appearance
+----------------
+
+hl.config({
+  general = {
+    gaps_in = 5,
+    gaps_out = 5,
+    border_size = 2,
+    col = {
+      active_border = {
+        colors = { "rgba(33ccffee)", "rgba(00ff99ee)" },
+        angle = 45,
+      },
+      inactive_border = "rgba(595959aa)",
+    },
+    resize_on_border = false,
+    allow_tearing = false,
+    layout = "dwindle",
+  },
+
+  decoration = {
+    rounding = 0,
+    rounding_power = 0,
+    active_opacity = 1.0,
+    inactive_opacity = 1.0,
+    shadow = {
+      enabled = true,
+      range = 4,
+      render_power = 3,
+      color = "rgba(1a1a1aee)",
+    },
+    blur = {
+      enabled = true,
+      size = 3,
+      passes = 1,
+      vibrancy = 0.1696,
+    },
+  },
+
+  animations = {
+    enabled = true,
+  },
+
+  dwindle = {
+    preserve_split = true,
+  },
+
+  master = {
+    new_status = "master",
+  },
+
+  misc = {
+    force_default_wallpaper = 0,
+    disable_hyprland_logo = true,
+    focus_on_activate = true,
+  },
+
+  group = {
+    groupbar = {
+      enabled = true,
+      render_titles = true,
+      font_size = 13,
+      height = 22,
+      indicator_height = 3,
+      col = {
+        active = "rgba(00ff00ff)",
+        inactive = "rgba(7aa2f7ff)",
+      },
+      text_color = "rgba(ffffffff)",
+      gradients = false,
+      stacked = false,
+      keep_upper_gap = false,
+    },
+  },
+
+  ecosystem = {
+    no_update_news = true,
+    no_donation_nag = true,
+  },
+})
+
+hl.curve("easeOutQuint", {
+  type = "bezier",
+  points = { { 0.23, 1 }, { 0.32, 1 } },
+})
+hl.curve("easeInOutCubic", {
+  type = "bezier",
+  points = { { 0.65, 0.05 }, { 0.36, 1 } },
+})
+hl.curve("linear", {
+  type = "bezier",
+  points = { { 0, 0 }, { 1, 1 } },
+})
+hl.curve("almostLinear", {
+  type = "bezier",
+  points = { { 0.5, 0.5 }, { 0.75, 1 } },
+})
+hl.curve("quick", {
+  type = "bezier",
+  points = { { 0.15, 0 }, { 0.1, 1 } },
+})
+
+hl.animation({ leaf = "global", enabled = true, speed = 10, bezier = "default" })
+hl.animation({ leaf = "border", enabled = true, speed = 5.39, bezier = "easeOutQuint" })
+hl.animation({ leaf = "windows", enabled = true, speed = 4.79, bezier = "easeOutQuint" })
+hl.animation({ leaf = "windowsIn", enabled = true, speed = 4.1, bezier = "easeOutQuint", style = "popin 87%" })
+hl.animation({ leaf = "windowsOut", enabled = true, speed = 1.49, bezier = "linear", style = "popin 87%" })
+hl.animation({ leaf = "fadeIn", enabled = true, speed = 1.73, bezier = "almostLinear" })
+hl.animation({ leaf = "fadeOut", enabled = true, speed = 1.46, bezier = "almostLinear" })
+hl.animation({ leaf = "fade", enabled = true, speed = 3.03, bezier = "quick" })
+hl.animation({ leaf = "layers", enabled = true, speed = 3.81, bezier = "easeOutQuint" })
+hl.animation({ leaf = "layersIn", enabled = true, speed = 4, bezier = "easeOutQuint", style = "fade" })
+hl.animation({ leaf = "layersOut", enabled = true, speed = 1.5, bezier = "linear", style = "fade" })
+hl.animation({ leaf = "fadeLayersIn", enabled = true, speed = 1.79, bezier = "almostLinear" })
+hl.animation({ leaf = "fadeLayersOut", enabled = true, speed = 1.39, bezier = "almostLinear" })
+hl.animation({ leaf = "workspaces", enabled = true, speed = 1.94, bezier = "almostLinear", style = "fade" })
+hl.animation({ leaf = "workspacesIn", enabled = true, speed = 1.21, bezier = "almostLinear", style = "fade" })
+hl.animation({ leaf = "workspacesOut", enabled = true, speed = 1.94, bezier = "almostLinear", style = "fade" })
+
+----------------
+-- Input
+----------------
+
+hl.config({
+  input = {
+    kb_layout = "us,rs,rs",
+    kb_variant = ",latin,",
+    kb_model = "",
+    kb_options = "grp:win_space_toggle",
+    kb_rules = "",
+    numlock_by_default = true,
+    follow_mouse = 1,
+    sensitivity = 0,
+    touchpad = {
+      natural_scroll = false,
+    },
+  },
+})
+
+hl.device({
+  name = "epic-mouse-v1",
+  sensitivity = -0.5,
+})
+
+----------------
+-- Workspaces
+----------------
+
+for workspace = 1, 10 do
+  hl.workspace_rule({
+    workspace = tostring(workspace),
+    persistent = true,
+  })
+end
+
+----------------
+-- Keybindings
+----------------
+
+local main_mod = "SUPER"
+
+hl.bind(main_mod .. " + RETURN", hl.dsp.exec_cmd(terminal))
+hl.bind(main_mod .. " + SHIFT + Q", hl.dsp.window.close())
+hl.bind(main_mod .. " + M", hl.dsp.exec_cmd(
+  "command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"
+))
+hl.bind(main_mod .. " + E", hl.dsp.exec_cmd(file_manager))
+hl.bind(main_mod .. " + V", function()
+  hl.dispatch(hl.dsp.window.float({ action = "toggle" }))
+  hl.dispatch(hl.dsp.window.resize({ x = "50%", y = "50%" }))
+  hl.dispatch(hl.dsp.window.center())
+end)
+hl.bind(main_mod .. " + D", hl.dsp.exec_cmd(noctalia .. "panel-toggle launcher"))
+hl.bind(main_mod .. " + escape", hl.dsp.exec_cmd(noctalia .. "panel-toggle session"))
+hl.bind(main_mod .. " + L", hl.dsp.exec_cmd(
+  "busctl --user call org.keepassxc.KeePassXC.MainWindow "
+    .. "/keepassxc org.keepassxc.KeePassXC.MainWindow lockAllDatabases; "
+    .. noctalia
+    .. "session lock"
+))
+hl.bind(main_mod .. " + K", hl.dsp.exec_cmd(password_manager))
+hl.bind(main_mod .. " + P", hl.dsp.window.pseudo())
+hl.bind(main_mod .. " + J", hl.dsp.layout("togglesplit"))
+hl.bind(main_mod .. " + G", hl.dsp.group.toggle())
+hl.bind(main_mod .. " + H", hl.dsp.exec_cmd(noctalia .. "bar-toggle"))
+hl.bind(main_mod .. " + CTRL + Tab", hl.dsp.group.next())
+hl.bind(main_mod .. " + R", hl.dsp.window.swap({ next = true }))
+hl.bind(main_mod .. " + F", hl.dsp.exec_cmd(file_manager))
+hl.bind(main_mod .. " + B", hl.dsp.exec_cmd(browser))
+hl.bind(main_mod .. " + T", hl.dsp.exec_cmd(file_manager .. " trash:///"))
+hl.bind(main_mod .. " + SHIFT + T", hl.dsp.exec_cmd(
+  'trash-empty && notify-send "Trash" "Trash emptied"'
+))
+hl.bind(main_mod .. " + SHIFT + P", hl.dsp.exec_cmd(
+  'hyprshot -m region -o "$HOME/Pictures/Screenshots"'
+))
+hl.bind(main_mod .. " + SHIFT + L", hl.dsp.exec_cmd("hyprpicker -a"))
+
+-- Noctalia v5 controls
+hl.bind(main_mod .. " + SHIFT + V", hl.dsp.exec_cmd(noctalia .. "panel-toggle clipboard"))
+hl.bind(main_mod .. " + N", hl.dsp.exec_cmd(noctalia .. "panel-toggle control-center notifications"))
+hl.bind(main_mod .. " + comma", hl.dsp.exec_cmd(noctalia .. "settings-toggle"))
+hl.bind(main_mod .. " + TAB", hl.dsp.exec_cmd(noctalia .. "window-switcher"))
+
+hl.bind(main_mod .. " + left", hl.dsp.focus({ direction = "left" }))
+hl.bind(main_mod .. " + right", hl.dsp.focus({ direction = "right" }))
+hl.bind(main_mod .. " + up", hl.dsp.focus({ direction = "up" }))
+hl.bind(main_mod .. " + down", hl.dsp.focus({ direction = "down" }))
+
+for workspace = 1, 10 do
+  local key = workspace % 10
+  hl.bind(main_mod .. " + " .. key, hl.dsp.focus({ workspace = workspace }))
+  hl.bind(main_mod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = workspace }))
+end
+
+hl.bind(main_mod .. " + S", hl.dsp.workspace.toggle_special("magic"))
+hl.bind(main_mod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }))
+
+hl.bind(main_mod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
+hl.bind(main_mod .. " + mouse_up", hl.dsp.focus({ workspace = "e-1" }))
+hl.bind(main_mod .. " + page_down", hl.dsp.focus({ workspace = "e+1" }))
+hl.bind(main_mod .. " + page_up", hl.dsp.focus({ workspace = "e-1" }))
+
+hl.bind("ALT + R", hl.dsp.submap("resize"))
+hl.define_submap("resize", function()
+  hl.bind("right", hl.dsp.window.resize({ x = 10, y = 0, relative = true }), { repeating = true })
+  hl.bind("left", hl.dsp.window.resize({ x = -10, y = 0, relative = true }), { repeating = true })
+  hl.bind("up", hl.dsp.window.resize({ x = 0, y = -10, relative = true }), { repeating = true })
+  hl.bind("down", hl.dsp.window.resize({ x = 0, y = 10, relative = true }), { repeating = true })
+  hl.bind("escape", hl.dsp.submap("reset"))
+end)
+
+hl.bind(main_mod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
+hl.bind(main_mod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
+
+hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd(noctalia .. "volume-up"), {
+  locked = true,
+  repeating = true,
+})
+hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd(noctalia .. "volume-down"), {
+  locked = true,
+  repeating = true,
+})
+hl.bind("XF86AudioMute", hl.dsp.exec_cmd(noctalia .. "volume-mute"), { locked = true })
+hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd(noctalia .. "mic-mute"), { locked = true })
+hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd(noctalia .. "brightness-up"), {
+  locked = true,
+  repeating = true,
+})
+hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd(noctalia .. "brightness-down"), {
+  locked = true,
+  repeating = true,
+})
+
+hl.bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl next"), { locked = true })
+hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
+hl.bind("XF86AudioPlay", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
+hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"), { locked = true })
+
+hl.bind("switch:Lid Switch", hl.dsp.exec_cmd(
+  "~/.config/hypr/scripts/lid-monitor.sh lid-switch"
+), { locked = true })
+
+----------------
+-- Window rules
+----------------
+
+hl.window_rule({
+  name = "suppress-maximize-events",
+  match = { class = ".*" },
+  suppress_event = "maximize",
+})
+
+hl.window_rule({
+  name = "fix-xwayland-drags",
+  match = {
+    class = "^$",
+    title = "^$",
+    xwayland = true,
+    float = true,
+    fullscreen = false,
+    pin = false,
+  },
+  no_focus = true,
+})
+
+hl.window_rule({
+  name = "float-selected-apps",
+  match = {
+    class = "^(org\\.gnome\\.Calculator|org\\.keepassxc\\.KeePassXC)$",
+  },
+  float = true,
+})
+
+hl.window_rule({
+  name = "startup-terminal-workspace",
+  match = { class = "^(foot-startup)$" },
+  workspace = "2",
+})
+
+hl.window_rule({
+  name = "noctalia-settings",
+  match = { class = "dev.noctalia.Noctalia" },
+  float = true,
+  size = { 1080, 920 },
+})
+
+----------------
+-- Layer rules
+----------------
+
+hl.layer_rule({
+  name = "hyprpicker-no-animation",
+  match = { namespace = "hyprpicker" },
+  no_anim = true,
+})
+
+hl.layer_rule({
+  name = "selection-no-animation",
+  match = { namespace = "selection" },
+  no_anim = true,
+})
+
+hl.layer_rule({
+  name = "noctalia",
+  match = {
+    namespace = "^noctalia-(bar-.+|notification|dock|panel|attached-panel|osd)$",
+  },
+  no_anim = true,
+  ignore_alpha = 0.5,
+  blur = true,
+  blur_popups = true,
+})
